@@ -42,18 +42,16 @@ int main(void) {
    tempo = MPI_Wtime();
 
    for(int i = 0; i < n/comm_sz; i++){
-   	  a[i] *= escalar;
-   	  b[i] *= escalar;
       local_total += a[i] * b[i];
    }
 
    tempo = MPI_Wtime() - tempo;
 
-   MPI_Reduce(&tempo, &tempo_total, 2, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
-   MPI_Reduce(&local_total, &global_total, 2, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
+   MPI_Reduce(&tempo, &tempo_total, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
+   MPI_Reduce(&local_total, &global_total, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
    if (!my_rank) {
-      printf("%.2f milisegundos para produto interno\n", tempo * 1000);
+      printf("%.2f milisegundos para produto interno\n", tempo_total * 1000);
       printf("Resposta: %i\n", global_total);
    }
 
